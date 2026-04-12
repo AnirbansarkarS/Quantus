@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Play, Sparkles, BookOpen, Atom, Cpu, Code2 } from "lucide-react";
 import "./App.css";
 import Antigravity from "./components/Antigravity";
+import BorderGlow from "./components/BorderGlow";
 
 function Navbar() {
   return (
@@ -110,24 +111,38 @@ function ExperimentCards() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pointer-events-none">
         {simulations.map((sim, i) => (
-          <div 
-            key={sim.id} 
-            className="group relative bg-[#000000] border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center pointer-events-auto"
-          >
-            <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
-            
-            <div className="absolute top-4 right-4 bg-[#FAEB92]/10 border border-[#FAEB92]/30 text-[#FAEB92] text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold">
-              {sim.tag}
-            </div>
+          <div key={sim.id} className="pointer-events-auto h-full flex">
+            <BorderGlow
+              className="w-full flex-1"
+              edgeSensitivity={32}
+              glowColor="40 80 80"
+              backgroundColor="#000000"
+              borderRadius={16}
+              glowRadius={58}
+              glowIntensity={1.4}
+              coneSpread={26}
+              animated
+              colors={['#9929EA', '#CC66DA', '#FAEB92']}
+            >
+              <div 
+                className="group relative w-full h-full border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center bg-transparent"
+              >
+                <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
+                
+                <div className="absolute top-4 right-4 bg-[#FAEB92]/10 border border-[#FAEB92]/30 text-[#FAEB92] text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold">
+                  {sim.tag}
+                </div>
 
-            <div className="mt-8 mb-4">
-              {sim.icon}
-            </div>
-            
-            <h3 className="text-xl font-bold text-white mb-2">{sim.title}</h3>
-            <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-              {sim.desc}
-            </p>
+                <div className="mt-8 mb-4">
+                  {sim.icon}
+                </div>
+                
+                <h3 className="text-xl font-bold text-white mb-2">{sim.title}</h3>
+                <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                  {sim.desc}
+                </p>
+              </div>
+            </BorderGlow>
           </div>
         ))}
       </div>
