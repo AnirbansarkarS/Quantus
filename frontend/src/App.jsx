@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Play, Sparkles, BookOpen, Atom, Cpu, Code2 } from "lucide-react";
 import "./App.css";
 import Antigravity from "./components/Antigravity";
+import BorderGlow from "./components/BorderGlow";
 
 function Navbar() {
   return (
-    <nav className="fixed w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#9929EA]/20">
+    <nav className="fixed w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#9929EA]/20 pointer-events-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
@@ -42,7 +43,7 @@ function Hero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#CC66DA] blur-[90px] rounded-full mix-blend-screen mix-blend-lighten" />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto space-y-8">
+      <div className="relative z-10 max-w-4xl mx-auto space-y-8 pointer-events-auto">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight">
           Master the <span className="bg-gradient-to-r from-[#9929EA] via-[#CC66DA] to-[#FAEB92] text-transparent bg-clip-text">Quantum Realm</span>
         </h1>
@@ -102,32 +103,46 @@ const simulations = [
 
 function ExperimentCards() {
   return (
-    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10">
-      <div className="text-center mb-16 space-y-4">
+    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none overflow-visible">
+      <div className="text-center mb-16 space-y-4 pointer-events-auto">
         <h2 className="text-3xl md:text-5xl font-bold">Interactive Experiments</h2>
         <p className="text-gray-400 text-lg">Interactive simulations and deep learning for the quantum curious</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 pointer-events-none overflow-visible">
         {simulations.map((sim, i) => (
-          <div 
-            key={sim.id} 
-            className="group relative bg-[#000000] border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center"
-          >
-            <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
-            
-            <div className="absolute top-4 right-4 bg-[#FAEB92]/10 border border-[#FAEB92]/30 text-[#FAEB92] text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold">
-              {sim.tag}
-            </div>
+          <div key={sim.id} className="pointer-events-auto h-full flex overflow-visible">
+            <BorderGlow
+              className="w-full flex-1"
+              edgeSensitivity={32}
+              glowColor="40 80 80"
+              backgroundColor="#000000"
+              borderRadius={16}
+              glowRadius={58}
+              glowIntensity={1.4}
+              coneSpread={26}
+              animated
+              colors={['#9929EA', '#CC66DA', '#FAEB92']}
+            >
+              <div 
+                className="group relative w-full h-full border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center bg-transparent"
+              >
+                <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
+                
+                <div className="absolute top-4 right-4 bg-[#FAEB92]/10 border border-[#FAEB92]/30 text-[#FAEB92] text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold">
+                  {sim.tag}
+                </div>
 
-            <div className="mt-8 mb-4">
-              {sim.icon}
-            </div>
-            
-            <h3 className="text-xl font-bold text-white mb-2">{sim.title}</h3>
-            <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-              {sim.desc}
-            </p>
+                <div className="mt-8 mb-4">
+                  {sim.icon}
+                </div>
+                
+                <h3 className="text-xl font-bold text-white mb-2">{sim.title}</h3>
+                <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                  {sim.desc}
+                </p>
+              </div>
+            </BorderGlow>
           </div>
         ))}
       </div>
@@ -158,11 +173,9 @@ function App() {
         />
       </div>
       <div className="relative z-10 pointer-events-none">
-        <div className="pointer-events-auto">
-          <Navbar />
-          <Hero />
-          <ExperimentCards />
-        </div>
+        <Navbar />
+        <Hero />
+        <ExperimentCards />
       </div>
     </div>
   );
