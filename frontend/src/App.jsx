@@ -103,15 +103,15 @@ const simulations = [
 
 function ExperimentCards() {
   return (
-    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none">
+    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none overflow-visible">
       <div className="text-center mb-16 space-y-4 pointer-events-auto">
         <h2 className="text-3xl md:text-5xl font-bold">Interactive Experiments</h2>
         <p className="text-gray-400 text-lg">Interactive simulations and deep learning for the quantum curious</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pointer-events-none">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 pointer-events-none overflow-visible">
         {simulations.map((sim, i) => (
-          <div key={sim.id} className="pointer-events-auto h-full flex">
+          <div key={sim.id} className="pointer-events-auto h-full flex overflow-visible">
             <BorderGlow
               className="w-full flex-1"
               edgeSensitivity={32}
