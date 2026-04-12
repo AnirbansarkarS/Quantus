@@ -5,7 +5,7 @@ import Antigravity from "./components/Antigravity";
 
 function Navbar() {
   return (
-    <nav className="fixed w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#9929EA]/20">
+    <nav className="fixed w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#9929EA]/20 pointer-events-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
@@ -42,7 +42,7 @@ function Hero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#CC66DA] blur-[90px] rounded-full mix-blend-screen mix-blend-lighten" />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto space-y-8">
+      <div className="relative z-10 max-w-4xl mx-auto space-y-8 pointer-events-auto">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight">
           Master the <span className="bg-gradient-to-r from-[#9929EA] via-[#CC66DA] to-[#FAEB92] text-transparent bg-clip-text">Quantum Realm</span>
         </h1>
@@ -102,17 +102,17 @@ const simulations = [
 
 function ExperimentCards() {
   return (
-    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10">
-      <div className="text-center mb-16 space-y-4">
+    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none">
+      <div className="text-center mb-16 space-y-4 pointer-events-auto">
         <h2 className="text-3xl md:text-5xl font-bold">Interactive Experiments</h2>
         <p className="text-gray-400 text-lg">Interactive simulations and deep learning for the quantum curious</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pointer-events-none">
         {simulations.map((sim, i) => (
           <div 
             key={sim.id} 
-            className="group relative bg-[#000000] border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center"
+            className="group relative bg-[#000000] border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center pointer-events-auto"
           >
             <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
             
@@ -158,11 +158,9 @@ function App() {
         />
       </div>
       <div className="relative z-10 pointer-events-none">
-        <div className="pointer-events-auto">
-          <Navbar />
-          <Hero />
-          <ExperimentCards />
-        </div>
+        <Navbar />
+        <Hero />
+        <ExperimentCards />
       </div>
     </div>
   );
