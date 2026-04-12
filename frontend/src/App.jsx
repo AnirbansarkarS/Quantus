@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Play, Sparkles, BookOpen, Atom, Cpu, Code2 } from "lucide-react";
 import "./App.css";
+import Antigravity from "./components/Antigravity";
 
 function Navbar() {
   return (
@@ -91,7 +92,7 @@ const simulations = [
   },
   {
     id: 4,
-    title: "Schrödinger Equation",
+    title: "Schrï¿½dinger Equation",
     desc: "Render and execute probabilistic wave functions in real time.",
     tag: "Deep Dive",
     icon: <Code2 className="text-[#CC66DA] mb-4" size={32} />,
@@ -136,10 +137,33 @@ function ExperimentCards() {
 
 function App() {
   return (
-    <div className="min-h-screen bg-[#000000] text-white selection:bg-[#CC66DA] selection:text-white">
-      <Navbar />
-      <Hero />
-      <ExperimentCards />
+    <div className="min-h-screen bg-[#000000] text-white selection:bg-[#CC66DA] selection:text-white relative">
+      <div className="fixed inset-0 z-0 pointer-events-auto">
+        <Antigravity
+          count={300}
+          magnetRadius={10}
+          ringRadius={10}
+          waveSpeed={0.4}
+          waveAmplitude={1}
+          particleSize={2}
+          lerpSpeed={0.1}
+          color="#9806f9"
+          autoAnimate={false}
+          particleVariance={0.4}
+          rotationSpeed={0.4}
+          depthFactor={0.7}
+          pulseSpeed={3}
+          particleShape="sphere"
+          fieldStrength={9}
+        />
+      </div>
+      <div className="relative z-10 pointer-events-none">
+        <div className="pointer-events-auto">
+          <Navbar />
+          <Hero />
+          <ExperimentCards />
+        </div>
+      </div>
     </div>
   );
 }
