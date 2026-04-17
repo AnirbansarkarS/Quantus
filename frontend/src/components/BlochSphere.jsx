@@ -87,6 +87,8 @@ export default function BlochSphere() {
   const rendererRef = useRef(null);
   const sphereRef = useRef(null);
   const arrowRef = useRef(null);
+  const targetDirRef = useRef(new THREE.Vector3(0, 0, 1));
+  const currentDirRef = useRef(new THREE.Vector3(0, 0, 1));
   const [state, setState] = useState([
     { real: 1, imag: 0 }, // |0⟩ state
     { real: 0, imag: 0 },
@@ -176,9 +178,19 @@ export default function BlochSphere() {
     controls.enablePan = false; // Disable right click pan
 
     // Animation loop
+    const baseVector = new THREE.Vector3(0, 1, 0); // ArrowHelper default direction points up
+    
     const animate = () => {
       requestAnimationFrame(animate);
       controls.update(); // Required for damping
+
+      // Smoothly interpolate the arrow direction using quaternions
+      if (arrowRef.current && targetDirRef.current && currentDirRef.current) {
+        // We use slerp on currentDir to targetDir
+        currentDirRef.current.lerp(targetDirRef.current, 0.05).normalize();
+        arrowRef.current.setDirection(currentDirRef.current);
+      }
+
       renderer.render(scene, camera);
     };
     animate();
@@ -207,10 +219,8 @@ export default function BlochSphere() {
     const blochCoords = stateToBloch(state);
     setBloch(blochCoords);
 
-    if (arrowRef.current && sceneRef.current) {
-      arrowRef.current.setDirection(
-        new THREE.Vector3(blochCoords.x, blochCoords.y, blochCoords.z).normalize()
-      );
+    if (targetDirRef.current) {
+      targetDirRef.current.set(blochCoords.x, blochCoords.y, blochCoords.z).normalize();
     }
   }, [state]);
 
