@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Play, Sparkles, BookOpen, Atom, Cpu, Code2 } from "lucide-react";
+import { Play, Sparkles, BookOpen, Atom, Cpu, Code2, Menu, X } from "lucide-react";
 import "./App.css";
 import Antigravity from "./components/Antigravity";
 import BorderGlow from "./components/BorderGlow";
 
 function Navbar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <nav className="fixed w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#9929EA]/20 pointer-events-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,12 +25,31 @@ function Navbar() {
               <a href="#" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Community</a>
             </div>
           </div>
-          <div>
+          <div className="hidden md:block">
             <button className="bg-[#9929EA] hover:bg-[#CC66DA] text-white px-6 py-2 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(153,41,234,0.5)]">
               Launch Simulator
             </button>
           </div>
+          <button 
+            className="md:hidden text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden pb-4 border-t border-[#9929EA]/20">
+            <a href="#" className="block px-3 py-2 rounded-md text-sm font-medium text-white hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Courses</a>
+            <a href="#" className="block px-3 py-2 rounded-md text-sm font-medium text-[#FAEB92] bg-[#9929EA]/10">Simulations</a>
+            <a href="#" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Research</a>
+            <a href="#" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Community</a>
+            <button className="w-full mt-4 bg-[#9929EA] hover:bg-[#CC66DA] text-white px-6 py-2 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(153,41,234,0.5)]">
+              Launch Simulator
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );
@@ -103,7 +124,7 @@ const simulations = [
 
 function ExperimentCards() {
   return (
-    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none overflow-visible">
+    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none overflow-visible pt-32">
       <div className="text-center mb-16 space-y-4 pointer-events-auto">
         <h2 className="text-3xl md:text-5xl font-bold">Interactive Experiments</h2>
         <p className="text-gray-400 text-lg">Interactive simulations and deep learning for the quantum curious</p>
@@ -127,7 +148,7 @@ function ExperimentCards() {
               <div 
                 className="group relative w-full h-full border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center bg-transparent"
               >
-                <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
+                <div className={`absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
                 
                 <div className="absolute top-4 right-4 bg-[#FAEB92]/10 border border-[#FAEB92]/30 text-[#FAEB92] text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold">
                   {sim.tag}
