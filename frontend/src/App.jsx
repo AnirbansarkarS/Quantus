@@ -3,6 +3,7 @@ import { Play, Sparkles, BookOpen, Atom, Cpu, Code2, Menu, X } from "lucide-reac
 import "./App.css";
 import Antigravity from "./components/Antigravity";
 import BorderGlow from "./components/BorderGlow";
+import BlochSphere from "./components/BlochSphere";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -197,6 +198,7 @@ function App() {
         <Navbar />
         <Hero />
         <ExperimentCards />
+        <BlochSphere />
       </div>
     </div>
   );
