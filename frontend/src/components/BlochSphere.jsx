@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RotateCw, RotateCcw } from "lucide-react";
 
 // Quantum gate implementations
@@ -167,50 +168,17 @@ export default function BlochSphere() {
     pivot.add(arrowHelper);
     arrowRef.current = arrowHelper;
 
-    // Direct interaction controls map movement directly to rotation
-    let isDraggingCore = false;
-    let prevMousePosition = { x: 0, y: 0 };
-    
-    // Create a local OrbitControls-like behavior attached to the pivot
-    const onMouseDown = (e) => { 
-      isDraggingCore = true;
-      prevMousePosition = { x: e.clientX, y: e.clientY };
-    };
-    
-    const onMouseUp = () => { isDraggingCore = false; };
-    const onMouseLeave = () => { isDraggingCore = false; };
-    
-    const onMouseMove = (e) => {
-      if (!isDraggingCore) return;
-      const deltaX = e.clientX - prevMousePosition.x;
-      const deltaY = e.clientY - prevMousePosition.y;
-      
-      pivot.rotation.y += deltaX * 0.01;
-      pivot.rotation.x += deltaY * 0.01;
-      
-      prevMousePosition = { x: e.clientX, y: e.clientY };
-    };
+    // Add OrbitControls for perfect drag, rotate, and hold interaction
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = false; // Prevents zooming in/out to keep the sphere fixed size
+    controls.enablePan = false; // Disable right click pan
 
-    renderer.domElement.addEventListener("mousedown", onMouseDown);
-    renderer.domElement.addEventListener("mouseup", onMouseUp);
-    renderer.domElement.addEventListener("mouseleave", onMouseLeave);
-    renderer.domElement.addEventListener("mousemove", onMouseMove);
-    // Support touch devices
-    renderer.domElement.addEventListener("touchstart", (e) => {
-      if(e.touches.length > 0) {
-        onMouseDown(e.touches[0]);
-      }
-    });
-    renderer.domElement.addEventListener("touchend", onMouseUp);
-    renderer.domElement.addEventListener("touchmove", (e) => {
-      if(e.touches.length > 0) {
-        onMouseMove(e.touches[0]);
-      }
-    });
-
-    // Animation loop (just rendering)
+    // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
+      controls.update(); // Required for damping
       renderer.render(scene, camera);
     };
     animate();
@@ -227,12 +195,12 @@ export default function BlochSphere() {
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      renderer.domElement.removeEventListener("mousedown", onMouseDown);
-      renderer.domElement.removeEventListener("mouseup", onMouseUp);
-      renderer.domElement.removeEventListener("mousemove", onMouseMove);
-      containerRef.current?.removeChild(renderer.domElement);
+      controls.dispose();
+      if (containerRef.current && renderer.domElement) {
+        containerRef.current.removeChild(renderer.domElement);
+      }
     };
-  }, [isDragging]);
+  }, []);
 
   // Update arrow based on state
   useEffect(() => {
