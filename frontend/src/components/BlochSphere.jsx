@@ -116,6 +116,10 @@ export default function BlochSphere() {
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
+    // Group objects to rotate together
+    const pivot = new THREE.Group();
+    scene.add(pivot);
+
     // Bloch sphere (wireframe)
     const sphereGeometry = new THREE.IcosahedronGeometry(1, 16);
     const sphereMaterial = new THREE.MeshBasicMaterial({
@@ -125,7 +129,7 @@ export default function BlochSphere() {
       opacity: 0.3,
     });
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    scene.add(sphere);
+    pivot.add(sphere);
     sphereRef.current = sphere;
 
     // Axes
@@ -151,7 +155,7 @@ export default function BlochSphere() {
       ]),
       new THREE.LineBasicMaterial({ color: 0x40ff40 })
     );
-    scene.add(xAxis, yAxis, zAxis);
+    pivot.add(xAxis, yAxis, zAxis);
 
     // State vector arrow
     const arrowHelper = new THREE.ArrowHelper(
@@ -160,38 +164,53 @@ export default function BlochSphere() {
       1,
       0x00ffff
     );
-    scene.add(arrowHelper);
+    pivot.add(arrowHelper);
     arrowRef.current = arrowHelper;
 
-    // Mouse controls
-    const onMouseDown = () => setIsDragging(true);
-    const onMouseUp = () => setIsDragging(false);
+    // Direct interaction controls map movement directly to rotation
+    let isDraggingCore = false;
+    let prevMousePosition = { x: 0, y: 0 };
+    
+    // Create a local OrbitControls-like behavior attached to the pivot
+    const onMouseDown = (e) => { 
+      isDraggingCore = true;
+      prevMousePosition = { x: e.clientX, y: e.clientY };
+    };
+    
+    const onMouseUp = () => { isDraggingCore = false; };
+    const onMouseLeave = () => { isDraggingCore = false; };
+    
     const onMouseMove = (e) => {
-      if (!isDragging) return;
-      setRotation((prev) => ({
-        x: prev.x + e.movementY * 0.01,
-        y: prev.y + e.movementX * 0.01,
-      }));
+      if (!isDraggingCore) return;
+      const deltaX = e.clientX - prevMousePosition.x;
+      const deltaY = e.clientY - prevMousePosition.y;
+      
+      pivot.rotation.y += deltaX * 0.01;
+      pivot.rotation.x += deltaY * 0.01;
+      
+      prevMousePosition = { x: e.clientX, y: e.clientY };
     };
 
     renderer.domElement.addEventListener("mousedown", onMouseDown);
     renderer.domElement.addEventListener("mouseup", onMouseUp);
+    renderer.domElement.addEventListener("mouseleave", onMouseLeave);
     renderer.domElement.addEventListener("mousemove", onMouseMove);
+    // Support touch devices
+    renderer.domElement.addEventListener("touchstart", (e) => {
+      if(e.touches.length > 0) {
+        onMouseDown(e.touches[0]);
+      }
+    });
+    renderer.domElement.addEventListener("touchend", onMouseUp);
+    renderer.domElement.addEventListener("touchmove", (e) => {
+      if(e.touches.length > 0) {
+        onMouseMove(e.touches[0]);
+      }
+    });
 
-    // Animation loop
+    // Animation loop (just rendering)
     const animate = () => {
       requestAnimationFrame(animate);
-      sphere.rotation.x += rotation.x * 0.1;
-      sphere.rotation.y += rotation.y * 0.1;
-      xAxis.rotation.x += rotation.x * 0.1;
-      xAxis.rotation.y += rotation.y * 0.1;
-      yAxis.rotation.x += rotation.x * 0.1;
-      yAxis.rotation.y += rotation.y * 0.1;
-      zAxis.rotation.x += rotation.x * 0.1;
-      zAxis.rotation.y += rotation.y * 0.1;
-      arrowHelper.rotation.x += rotation.x * 0.1;
-      arrowHelper.rotation.y += rotation.y * 0.1;
-
       renderer.render(scene, camera);
     };
     animate();
