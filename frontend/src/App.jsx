@@ -1,34 +1,57 @@
 import React, { useState } from "react";
-import { Play, Sparkles, BookOpen, Atom, Cpu, Code2 } from "lucide-react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Play, Sparkles, BookOpen, Atom, Cpu, Code2, Menu, X, ArrowLeft } from "lucide-react";
 import "./App.css";
 import Antigravity from "./components/Antigravity";
 import BorderGlow from "./components/BorderGlow";
+import BlochSphere from "./components/BlochSphere";
 
 function Navbar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <nav className="fixed w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#9929EA]/20 pointer-events-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <Atom className="text-[#CC66DA]" size={28} />
             <span className="text-xl font-bold bg-gradient-to-r from-[#FAEB92] via-[#CC66DA] to-[#9929EA] text-transparent bg-clip-text">
               Quantus
             </span>
-          </div>
+          </Link>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <a href="#" className="hover:text-[#FAEB92] text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Courses</a>
-              <a href="#" className="text-[#FAEB92] px-3 py-2 rounded-md text-sm font-medium border-b-2 border-[#FAEB92]">Simulations</a>
-              <a href="#" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Research</a>
-              <a href="#" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Community</a>
+              <Link to="/" className="hover:text-[#FAEB92] text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Courses</Link>
+              <Link to="/bloch-sphere" className="text-[#FAEB92] hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Simulations</Link>
+              <Link to="/" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Research</Link>
+              <Link to="/" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Community</Link>
             </div>
           </div>
-          <div>
+          <div className="hidden md:block">
             <button className="bg-[#9929EA] hover:bg-[#CC66DA] text-white px-6 py-2 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(153,41,234,0.5)]">
               Launch Simulator
             </button>
           </div>
+          <button 
+            className="md:hidden text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden pb-4 border-t border-[#9929EA]/20">
+            <Link to="/" className="block px-3 py-2 rounded-md text-sm font-medium text-white hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Courses</Link>
+            <Link to="/bloch-sphere" className="block px-3 py-2 rounded-md text-sm font-medium text-[#FAEB92] bg-[#9929EA]/10">Simulations</Link>
+            <Link to="/" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Research</Link>
+            <Link to="/" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Community</Link>
+            <button className="w-full mt-4 bg-[#9929EA] hover:bg-[#CC66DA] text-white px-6 py-2 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(153,41,234,0.5)]">
+              Launch Simulator
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );
@@ -103,7 +126,7 @@ const simulations = [
 
 function ExperimentCards() {
   return (
-    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none overflow-visible">
+    <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none overflow-visible pt-32">
       <div className="text-center mb-16 space-y-4 pointer-events-auto">
         <h2 className="text-3xl md:text-5xl font-bold">Interactive Experiments</h2>
         <p className="text-gray-400 text-lg">Interactive simulations and deep learning for the quantum curious</p>
@@ -112,41 +135,52 @@ function ExperimentCards() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 pointer-events-none overflow-visible">
         {simulations.map((sim, i) => (
           <div key={sim.id} className="pointer-events-auto h-full flex overflow-visible">
-            <BorderGlow
-              className="w-full flex-1"
-              edgeSensitivity={32}
-              glowColor="40 80 80"
-              backgroundColor="#000000"
-              borderRadius={16}
-              glowRadius={58}
-              glowIntensity={1.4}
-              coneSpread={26}
-              animated
-              colors={['#9929EA', '#CC66DA', '#FAEB92']}
-            >
-              <div 
-                className="group relative w-full h-full border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center bg-transparent"
+            <Link to={sim.title === "Bloch Sphere" ? "/bloch-sphere" : "/"} className="w-full flex-1">
+              <BorderGlow
+                className="w-full h-full"
+                edgeSensitivity={32}
+                glowColor="40 80 80"
+                backgroundColor="#000000"
+                borderRadius={16}
+                glowRadius={58}
+                glowIntensity={1.4}
+                coneSpread={26}
+                animated
+                colors={['#9929EA', '#CC66DA', '#FAEB92']}
               >
-                <div className={`absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
-                
-                <div className="absolute top-4 right-4 bg-[#FAEB92]/10 border border-[#FAEB92]/30 text-[#FAEB92] text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold">
-                  {sim.tag}
-                </div>
+                <div 
+                  className="group relative w-full h-full border border-[#9929EA]/30 hover:border-[#CC66DA] rounded-2xl p-6 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(153,41,234,0.3)] overflow-hidden cursor-pointer flex flex-col items-center text-center bg-transparent"
+                >
+                  <div className={`absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br ${sim.color} opacity-20 blur-2xl rounded-full group-hover:opacity-40 transition-opacity`} />
+                  
+                  <div className="absolute top-4 right-4 bg-[#FAEB92]/10 border border-[#FAEB92]/30 text-[#FAEB92] text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold">
+                    {sim.tag}
+                  </div>
 
-                <div className="mt-8 mb-4">
-                  {sim.icon}
+                  <div className="mt-8 mb-4">
+                    {sim.icon}
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-white mb-2">{sim.title}</h3>
+                  <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                    {sim.desc}
+                  </p>
                 </div>
-                
-                <h3 className="text-xl font-bold text-white mb-2">{sim.title}</h3>
-                <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-                  {sim.desc}
-                </p>
-              </div>
-            </BorderGlow>
+              </BorderGlow>
+            </Link>
           </div>
         ))}
       </div>
     </section>
+  );
+}
+
+function Home() {
+  return (
+    <>
+      <Hero />
+      <ExperimentCards />
+    </>
   );
 }
 
@@ -174,8 +208,10 @@ function App() {
       </div>
       <div className="relative z-10 pointer-events-none">
         <Navbar />
-        <Hero />
-        <ExperimentCards />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/bloch-sphere" element={<BlochSphere />} />
+        </Routes>
       </div>
     </div>
   );
