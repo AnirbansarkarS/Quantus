@@ -289,6 +289,9 @@ export default function QiskitPlayground() {
     const [pyodideInstance, setPyodideInstance] = useState(null);
     const [engineStatus, setEngineStatus] = useState("loading");
     const [isRealtimeRunning, setIsRealtimeRunning] = useState(false);
+    const [terminalCommand, setTerminalCommand] = useState("");
+    const [terminalHistory, setTerminalHistory] = useState([]);
+    const [isTerminalBusy, setIsTerminalBusy] = useState(false);
     const realtimeRunRef = useRef(0);
 
     useEffect(() => {
@@ -332,6 +335,10 @@ class QuantumCircuit:
     }, []);
 
     const template = TEMPLATES[activeTemplate];
+
+    const addTerminalLog = useCallback((line) => {
+        setTerminalHistory((prev) => [...prev, line]);
+    }, []);
 
     const executePythonCode = useCallback(async (sourceCode) => {
         if (!pyodideInstance) {
@@ -413,6 +420,72 @@ sys.stderr = io.StringIO()
             setIsRunning(false);
         }, 800);
     }, [activeTemplate, code, executePythonCode]);
+
+    const runTerminalCommand = useCallback(async () => {
+        const command = terminalCommand.trim();
+        if (!command || isTerminalBusy) {
+            return;
+        }
+
+        addTerminalLog(`$ ${command}`);
+        setTerminalCommand("");
+        setIsTerminalBusy(true);
+
+        if (!pyodideInstance) {
+            addTerminalLog("Python engine is not ready yet.");
+            setIsTerminalBusy(false);
+            return;
+        }
+
+        try {
+            if (command.startsWith("pip install ")) {
+                const packages = command
+                    .slice("pip install ".length)
+                    .split(/\s+/)
+                    .map((pkg) => pkg.trim())
+                    .filter(Boolean);
+
+                if (packages.length === 0) {
+                    addTerminalLog("Usage: pip install <package> [package2 ...]");
+                    setIsTerminalBusy(false);
+                    return;
+                }
+
+                addTerminalLog("Installing packages...");
+                await pyodideInstance.loadPackage("micropip");
+
+                for (const pkg of packages) {
+                    if (pkg.toLowerCase() === "qiskit") {
+                        addTerminalLog("Note: full qiskit may fail in browser runtime due to native dependencies.");
+                    }
+
+                    const safePkg = pkg.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+                    await pyodideInstance.runPythonAsync(`
+import micropip
+await micropip.install("${safePkg}")
+                    `);
+                    addTerminalLog(`Installed: ${pkg}`);
+                }
+            } else if (command === "pip list") {
+                const result = await executePythonCode(`
+import importlib.metadata as md
+for d in sorted(md.distributions(), key=lambda x: (x.metadata.get('Name') or '').lower()):
+    name = d.metadata.get('Name') or 'unknown'
+    print(f"{name}=={d.version}")
+                `);
+                addTerminalLog(result);
+            } else if (command === "clear") {
+                setTerminalHistory([]);
+            } else {
+                const result = await executePythonCode(command);
+                addTerminalLog(result);
+            }
+        } catch (error) {
+            addTerminalLog(error?.toString?.() || String(error));
+        } finally {
+            setIsTerminalBusy(false);
+        }
+    }, [terminalCommand, isTerminalBusy, pyodideInstance, addTerminalLog, executePythonCode]);
 
     return (
         <section className="py-20 px-4 max-w-7xl mx-auto relative z-10 pointer-events-none overflow-visible pt-24">
@@ -535,6 +608,50 @@ sys.stderr = io.StringIO()
                                 {terminalOutput || (
                                     <span className="text-gray-600 italic">Run python code to see stdout here...</span>
                                 )}
+                            </div>
+                        </div>
+
+                        <div className="bg-[#0a0a0a] border border-[#9929EA]/30 rounded-xl overflow-hidden h-[220px] flex flex-col">
+                            <div className="px-4 py-2 border-b border-[#9929EA]/20 flex items-center justify-between gap-2 text-sm text-gray-400 bg-[#121212]">
+                                <div className="flex items-center gap-2">
+                                    <Terminal size={14} /> Package Terminal
+                                </div>
+                                <span className={`text-[10px] ${isTerminalBusy ? "text-yellow-400" : "text-gray-500"}`}>
+                                    {isTerminalBusy ? "Running command..." : "Use: pip install, pip list, clear"}
+                                </span>
+                            </div>
+
+                            <div className="px-4 py-3 overflow-y-auto font-mono text-xs whitespace-pre-wrap flex-1 text-gray-300 space-y-1">
+                                {terminalHistory.length > 0 ? (
+                                    terminalHistory.map((line, idx) => (
+                                        <div key={`${line}-${idx}`}>{line}</div>
+                                    ))
+                                ) : (
+                                    <span className="text-gray-600 italic">Try: pip install numpy</span>
+                                )}
+                            </div>
+
+                            <div className="p-3 border-t border-[#9929EA]/20 flex items-center gap-2">
+                                <span className="font-mono text-xs text-[#FAEB92]">$</span>
+                                <input
+                                    type="text"
+                                    value={terminalCommand}
+                                    onChange={(e) => setTerminalCommand(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            runTerminalCommand();
+                                        }
+                                    }}
+                                    placeholder="pip install qiskit"
+                                    className="flex-1 bg-[#121212] border border-[#9929EA]/30 rounded px-3 py-2 text-xs text-gray-200 outline-none focus:border-[#CC66DA]"
+                                />
+                                <button
+                                    onClick={runTerminalCommand}
+                                    disabled={isTerminalBusy || !terminalCommand.trim()}
+                                    className="px-3 py-2 rounded text-xs font-semibold bg-[#9929EA] hover:bg-[#CC66DA] disabled:opacity-50 text-white transition-colors"
+                                >
+                                    Run
+                                </button>
                             </div>
                         </div>
                     </div>
