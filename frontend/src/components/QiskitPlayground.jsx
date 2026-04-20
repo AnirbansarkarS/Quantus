@@ -154,9 +154,10 @@ qc.measure(0, 0)
 };
 
 // ─── Circuit Diagram SVG ─────────────────────────────────────────
-function CircuitDiagram({ template }) {
-    const { qubits, gates } = template;
-    const maxStep = Math.max(...gates.map((g) => g.step)) + 1;
+function CircuitDiagram({ data }) {
+    if (!data) return null;
+    const { qubits, gates } = data;
+    const maxStep = gates.length > 0 ? Math.max(...gates.map((g) => g.step)) + 1 : 1;
     const cellW = 60;
     const cellH = 50;
     const padLeft = 60;
@@ -289,6 +290,7 @@ export default function QiskitPlayground() {
     const [pyodideInstance, setPyodideInstance] = useState(null);
     const [engineStatus, setEngineStatus] = useState("loading");
     const [isRealtimeRunning, setIsRealtimeRunning] = useState(false);
+    const [dynamicCircuit, setDynamicCircuit] = useState(null);
     const [terminalCommand, setTerminalCommand] = useState("");
     const [terminalHistory, setTerminalHistory] = useState([]);
     const [isTerminalBusy, setIsTerminalBusy] = useState(false);
@@ -305,13 +307,57 @@ export default function QiskitPlayground() {
                 });
 
                 py.runPython(`
+import json
+
+_circuits = []
+
 class QuantumCircuit:
-    def __init__(self, *args, **kwargs): pass
-    def h(self, *args, **kwargs): pass
-    def cx(self, *args, **kwargs): pass
-    def cz(self, *args, **kwargs): pass
-    def z(self, *args, **kwargs): pass
-    def measure(self, *args, **kwargs): pass
+    def __init__(self, num_qubits, num_clbits=0, *args, **kwargs):
+        if isinstance(num_qubits, list):
+            self.num_qubits = len(num_qubits)
+        else:
+            self.num_qubits = num_qubits
+            
+        self.gates = []
+        self._qubit_steps = [0] * self.num_qubits
+        global _circuits
+        _circuits.append(self)
+        
+    def _add_gate(self, name, qubits, control=None, target=None):
+        step = max((self._qubit_steps[q] for q in qubits if q < self.num_qubits), default=0)
+        if control is not None:
+            self.gates.append({"gate": name, "qubit": control, "step": step, "control": True, "target": target})
+            self.gates.append({"gate": "⊕", "qubit": target, "step": step})
+        elif name == "CZ":
+            self.gates.append({"gate": "CZ", "qubit": qubits[0], "step": step})
+            self.gates.append({"gate": "CZ", "qubit": qubits[1], "step": step})
+        else:
+            for q in qubits:
+                self.gates.append({"gate": name, "qubit": q, "step": step})
+                
+        for q in qubits:
+            if q < self.num_qubits:
+                self._qubit_steps[q] = step + 1
+
+    def h(self, qubit): self._add_gate("H", [qubit])
+    def z(self, qubit): self._add_gate("Z", [qubit])
+    def x(self, qubit): self._add_gate("X", [qubit])
+    def y(self, qubit): self._add_gate("Y", [qubit])
+    def cy(self, control, target): self._add_gate("CY", [control, target])
+    def cx(self, control, target): self._add_gate("●", [control, target], control=control, target=target)
+    def cz(self, control, target): self._add_gate("CZ", [control, target])
+    
+    def measure(self, qubit, clbit=None):
+        if isinstance(qubit, list):
+            self._add_gate("M", qubit)
+        else:
+            self._add_gate("M", [qubit])
+
+def _get_last_circuit_json():
+    global _circuits
+    if not _circuits: return "{}"
+    last = _circuits[-1]
+    return json.dumps({"qubits": last.num_qubits, "gates": last.gates})
                 `);
 
                 if (!disposed) {
@@ -353,6 +399,8 @@ import sys
 import io
 sys.stdout = io.StringIO()
 sys.stderr = io.StringIO()
+if '_circuits' in globals():
+    _circuits.clear()
             `);
 
             await pyodideInstance.runPythonAsync(sourceCode);
@@ -378,6 +426,20 @@ sys.stderr = io.StringIO()
             const result = await executePythonCode(code);
             if (runId === realtimeRunRef.current) {
                 setTerminalOutput(result);
+                
+                try {
+                    if (pyodideInstance) {
+                        const jsonStr = pyodideInstance.runPython("_get_last_circuit_json()");
+                        if (jsonStr && jsonStr !== "{}" && jsonStr !== "null") {
+                            setDynamicCircuit(JSON.parse(jsonStr));
+                        } else {
+                            setDynamicCircuit({ qubits: 0, gates: [] });
+                        }
+                    }
+                } catch (err) {
+                    console.warn("Could not parse circuit data dynamically:", err);
+                }
+                
                 setIsRealtimeRunning(false);
             }
         }, 500);
@@ -390,6 +452,7 @@ sys.stderr = io.StringIO()
     const selectTemplate = (key) => {
         setActiveTemplate(key);
         setCode(TEMPLATES[key].code);
+        setDynamicCircuit(null);
         setOutput(null);
         setTerminalOutput("");
         setShowTemplates(false);
@@ -401,6 +464,19 @@ sys.stderr = io.StringIO()
         setTerminalOutput("Running circuit...");
 
         const pythonResult = await executePythonCode(code);
+
+        try {
+            if (pyodideInstance) {
+                const jsonStr = pyodideInstance.runPython("_get_last_circuit_json()");
+                if (jsonStr && jsonStr !== "{}" && jsonStr !== "null") {
+                    setDynamicCircuit(JSON.parse(jsonStr));
+                } else {
+                    setDynamicCircuit({ qubits: 0, gates: [] });
+                }
+            }
+        } catch (err) {
+            console.warn("Could not parse circuit data dynamically:", err);
+        }
 
         setTimeout(() => {
             const baseResults = { ...TEMPLATES[activeTemplate].results };
@@ -664,7 +740,7 @@ for d in sorted(md.distributions(), key=lambda x: (x.metadata.get('Name') or '')
                                 <Cpu size={14} /> Circuit Diagram
                             </div>
                             <div className="p-4">
-                                <CircuitDiagram template={template} />
+                                <CircuitDiagram data={dynamicCircuit || template} />
                             </div>
                         </div>
 
