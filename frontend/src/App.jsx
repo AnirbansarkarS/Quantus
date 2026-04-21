@@ -14,6 +14,7 @@ import SpringOscillator from "./components/SpringOscillator";
 import QiskitPlayground from "./components/QiskitPlayground";
 import Roadmap from "./components/Roadmap";
 import RoadmapPromo from "./components/RoadmapPromo";
+import { Hero } from "./components/HeroAnimation";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -64,37 +65,6 @@ function Navbar() {
         )}
       </div>
     </nav>
-  );
-}
-
-function Hero() {
-  return (
-    <div className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex flex-col items-center text-center px-4">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-[1200px] opacity-40 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-[#9929EA] blur-[120px] rounded-full mix-blend-screen" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-[#CC66DA] blur-[90px] rounded-full mix-blend-screen" />
-      </div>
-
-      <div className="relative z-10 max-w-4xl mx-auto space-y-8 pointer-events-auto">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight">
-          Master the <span className="bg-gradient-to-r from-[#9929EA] via-[#CC66DA] to-[#FAEB92] text-transparent bg-clip-text">Quantum Realm</span>
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
-          Interactive simulations and deep learning for the quantum curious
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <Link to="/simulations" className="w-full sm:w-auto px-8 py-3 bg-[#9929EA] hover:bg-[#CC66DA] text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(153,41,234,0.4)] flex items-center justify-center gap-2">
-            <Play size={20} fill="currentColor" />
-            Explore Simulations
-          </Link>
-          <Link to="/playground" className="w-full sm:w-auto px-8 py-3 bg-[#000000] border border-[#9929EA] hover:border-[#CC66DA] hover:bg-[#9929EA]/10 text-white rounded-full font-semibold transition-all flex items-center justify-center gap-2">
-            <Terminal size={20} />
-            Quantum Playground
-          </Link>
-        </div>
-      </div>
-    </div>
   );
 }
 
