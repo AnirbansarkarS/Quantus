@@ -66,6 +66,7 @@ export function RoadmapPromo() {
                 <div 
                   key={step.id} 
                   onMouseEnter={() => setActiveStep(idx)}
+                  onClick={() => setActiveStep(idx)}
                   className={`
                     relative rounded-2xl p-6 cursor-pointer transition-all duration-500 border-2 overflow-hidden
                     ${isActive 
@@ -75,7 +76,7 @@ export function RoadmapPromo() {
                   `}
                 >
                   {isActive && (
-                    <div className={`absolute inset-y-0 -left-1/4 w-1/2 bg-gradient-to-r ${step.gradient} blur-3xl`} />
+                    <div className={`absolute inset-y-0 -left-1/4 w-1/2 pointer-events-none bg-gradient-to-r ${step.gradient} blur-3xl`} />
                   )}
                   
                   <div className="relative z-10 flex items-start gap-5">
@@ -102,7 +103,7 @@ export function RoadmapPromo() {
           </div>
 
           <div className="lg:col-span-5 relative w-full flex flex-col items-center justify-center pt-8 lg:pt-0">
-            <div className={`absolute inset-0 blur-[100px] rounded-full opacity-40 transition-all duration-700 bg-gradient-to-tr ${steps[activeStep].gradient}`} />
+            <div className={`absolute inset-0 blur-[100px] rounded-full opacity-40 pointer-events-none transition-all duration-700 bg-gradient-to-tr ${steps[activeStep].gradient}`} />
             
             <div className="relative rounded-[2rem] border border-white/10 bg-[#1A1A2E]/80 backdrop-blur-xl p-10 w-full flex flex-col items-center text-center shadow-[0_0_50px_rgba(0,0,0,0.5)]">
               <div className="w-40 h-40 rounded-full border-4 border-white/5 flex items-center justify-center relative mb-8 shadow-inner">

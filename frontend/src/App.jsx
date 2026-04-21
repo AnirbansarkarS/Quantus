@@ -259,7 +259,7 @@ function Simulations() {
 function App() {
   return (
     <div className="min-h-screen bg-[#000000] text-white selection:bg-[#CC66DA] selection:text-white relative">
-      <div className="fixed inset-0 z-0 pointer-events-auto">
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <Antigravity
           count={300}
           magnetRadius={10}
@@ -278,7 +278,7 @@ function App() {
           fieldStrength={9}
         />
       </div>
-      <div className="relative z-10 pointer-events-none">
+      <div className="relative z-10 pointer-events-auto">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
