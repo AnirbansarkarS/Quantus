@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { Play, Sparkles, BookOpen, Atom, Cpu, Code2, Menu, X, Zap, Rocket, CircleDot, Waves, FlaskConical, Orbit, Terminal } from "lucide-react";
 import "./App.css";
 import Antigravity from "./components/Antigravity";
@@ -257,27 +257,55 @@ function Simulations() {
 }
 
 function App() {
+  const location = useLocation();
+  const simulationRoutes = new Set([
+    "/simulations",
+    "/bloch-sphere",
+    "/double-slit",
+    "/photoelectric",
+    "/schrodinger",
+    "/projectile",
+    "/pendulum",
+    "/spring",
+  ]);
+  const showBackgroundAnimation = !simulationRoutes.has(location.pathname);
+
   return (
     <div className="min-h-screen bg-[#000000] text-white selection:bg-[#CC66DA] selection:text-white relative">
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <Antigravity
-          count={300}
-          magnetRadius={10}
-          ringRadius={10}
-          waveSpeed={0.4}
-          waveAmplitude={1}
-          particleSize={2}
-          lerpSpeed={0.1}
-          color="#9806f9"
-          autoAnimate={false}
-          particleVariance={0.4}
-          rotationSpeed={0.4}
-          depthFactor={0.7}
-          pulseSpeed={3}
-          particleShape="sphere"
-          fieldStrength={9}
-        />
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#07040d] via-[#0a0612] to-[#020103]" />
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[900px] h-[360px] bg-[#9929EA]/18 blur-[140px] rounded-full" />
+        <div className="absolute top-1/3 -left-24 w-[420px] h-[420px] bg-[#CC66DA]/12 blur-[120px] rounded-full" />
+        <div className="absolute bottom-0 right-0 w-[520px] h-[320px] bg-[#9929EA]/10 blur-[130px] rounded-full" />
       </div>
+      {showBackgroundAnimation && (
+        <div className="fixed inset-0 z-[1] pointer-events-none">
+          <Antigravity
+            count={300}
+            magnetRadius={10}
+            ringRadius={10}
+            waveSpeed={0.4}
+            waveAmplitude={1}
+            particleSize={2}
+            lerpSpeed={0.1}
+            color="#9806f9"
+            autoAnimate={false}
+            particleVariance={0.4}
+            rotationSpeed={0.4}
+            depthFactor={0.7}
+            pulseSpeed={3}
+            particleShape="sphere"
+            fieldStrength={9}
+          />
+        </div>
+      )}
+      {!showBackgroundAnimation && (
+        <div className="fixed inset-0 z-[1] pointer-events-none overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#9929EA]/20 blur-[120px] rounded-full" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#CC66DA]/20 blur-[100px] rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#9929EA]/5 via-transparent to-[#CC66DA]/5" />
+        </div>
+      )}
       <div className="relative z-10 pointer-events-auto">
         <Navbar />
         <Routes>
