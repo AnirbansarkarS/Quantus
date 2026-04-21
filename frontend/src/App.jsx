@@ -12,6 +12,8 @@ import ProjectileMotion from "./components/ProjectileMotion";
 import Pendulum from "./components/Pendulum";
 import SpringOscillator from "./components/SpringOscillator";
 import QiskitPlayground from "./components/QiskitPlayground";
+import Roadmap from "./components/Roadmap";
+import RoadmapPromo from "./components/RoadmapPromo";
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,7 +31,8 @@ function Navbar() {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               <Link to="/" className="hover:text-[#FAEB92] text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</Link>
-              <Link to="/bloch-sphere" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Simulations</Link>
+              <Link to="/simulations" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Simulations</Link>
+              <Link to="/roadmap" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Roadmap</Link>
               <Link to="/playground" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1">
                 <Terminal size={14} /> Playground
               </Link>
@@ -51,7 +54,8 @@ function Navbar() {
         {mobileMenuOpen && (
           <div className="md:hidden pb-4 border-t border-[#9929EA]/20">
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-white hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Home</Link>
-            <Link to="/bloch-sphere" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Simulations</Link>
+            <Link to="/simulations" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Simulations</Link>
+            <Link to="/roadmap" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Roadmap</Link>
             <Link to="/playground" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Playground</Link>
             <Link to="/playground" onClick={() => setMobileMenuOpen(false)} className="block w-full mt-4 text-center bg-[#9929EA] hover:bg-[#CC66DA] text-white px-6 py-2 rounded-full font-medium transition-all">
               Launch Playground
@@ -80,7 +84,7 @@ function Hero() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <Link to="/bloch-sphere" className="w-full sm:w-auto px-8 py-3 bg-[#9929EA] hover:bg-[#CC66DA] text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(153,41,234,0.4)] flex items-center justify-center gap-2">
+          <Link to="/simulations" className="w-full sm:w-auto px-8 py-3 bg-[#9929EA] hover:bg-[#CC66DA] text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(153,41,234,0.4)] flex items-center justify-center gap-2">
             <Play size={20} fill="currentColor" />
             Explore Simulations
           </Link>
@@ -249,8 +253,25 @@ function Home() {
   return (
     <>
       <Hero />
+      <RoadmapPromo />
+      <PlaygroundPromo />
+    </>
+  );
+}
+
+function Simulations() {
+  return (
+    <div className="pt-24 pb-12">
+      <div className="text-center mb-8 px-4 relative z-10 pointer-events-auto">
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+          Interactive <span className="bg-gradient-to-r from-[#FAEB92] via-[#CC66DA] to-[#9929EA] text-transparent bg-clip-text">Simulations</span>
+        </h1>
+        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          Dive into our comprehensive collection of physics simulations, ranging from foundational classical mechanics to advanced quantum phenomena.
+        </p>
+      </div>
       <ExperimentSection
-        title="Quantum Experiments"
+        title="Quantum Physics"
         subtitle="Interactive simulations for quantum mechanics concepts"
         simulations={quantumSimulations}
         gradient="from-[#9929EA] via-[#CC66DA] to-[#FAEB92]"
@@ -261,8 +282,7 @@ function Home() {
         simulations={classicalSimulations}
         gradient="from-[#FAEB92] via-[#ff8844] to-[#ff4444]"
       />
-      <PlaygroundPromo />
-    </>
+    </div>
   );
 }
 
@@ -292,6 +312,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/simulations" element={<Simulations />} />
           <Route path="/bloch-sphere" element={<BlochSphere />} />
           <Route path="/double-slit" element={<DoubleSlit />} />
           <Route path="/photoelectric" element={<PhotoelectricEffect />} />
@@ -300,6 +321,7 @@ function App() {
           <Route path="/pendulum" element={<Pendulum />} />
           <Route path="/spring" element={<SpringOscillator />} />
           <Route path="/playground" element={<QiskitPlayground />} />
+          <Route path="/roadmap" element={<Roadmap />} />
         </Routes>
       </div>
     </div>
