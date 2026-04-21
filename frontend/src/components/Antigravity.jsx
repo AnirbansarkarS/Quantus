@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 const AntigravityInner = ({
@@ -22,10 +22,24 @@ const AntigravityInner = ({
   const meshRef = useRef(null);
   const { viewport, mouse } = useThree();
   const dummy = useMemo(() => new THREE.Object3D(), []);
+  const pointerRef = useRef({ x: 0, y: 0, active: false });
 
   const lastMousePos = useRef({ x: 0, y: 0 });
   const lastMouseMoveTime = useRef(0);
   const virtualMouse = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handlePointerMove = (event) => {
+      const width = window.innerWidth || 1;
+      const height = window.innerHeight || 1;
+      pointerRef.current.x = (event.clientX / width) * 2 - 1;
+      pointerRef.current.y = -((event.clientY / height) * 2 - 1);
+      pointerRef.current.active = true;
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    return () => window.removeEventListener('pointermove', handlePointerMove);
+  }, []);
 
   const particles = useMemo(() => {
     const temp = [];
@@ -73,17 +87,18 @@ const AntigravityInner = ({
     if (!mesh) return;
 
     const { viewport: v, pointer: m } = state;
+    const activePointer = pointerRef.current.active ? pointerRef.current : m;
 
     const mouseDist = Math.sqrt(
-      Math.pow(m.x - lastMousePos.current.x, 2) + Math.pow(m.y - lastMousePos.current.y, 2)
+      Math.pow(activePointer.x - lastMousePos.current.x, 2) + Math.pow(activePointer.y - lastMousePos.current.y, 2)
     );
     if (mouseDist > 0.001) {
       lastMouseMoveTime.current = Date.now();
-      lastMousePos.current = { x: m.x, y: m.y };
+      lastMousePos.current = { x: activePointer.x, y: activePointer.y };
     }
 
-    let destX = (m.x * v.width) / 2;
-    let destY = (m.y * v.height) / 2;
+    let destX = (activePointer.x * v.width) / 2;
+    let destY = (activePointer.y * v.height) / 2;
 
     if (autoAnimate && Date.now() - lastMouseMoveTime.current > 2000) {
       const time = state.clock.getElapsedTime();
@@ -172,7 +187,14 @@ const AntigravityInner = ({
 
 export default function Antigravity(props) {
   return (
-    <Canvas camera={{ position: [0, 0, 50], fov: 35 }}>
+    <Canvas
+      camera={{ position: [0, 0, 50], fov: 35 }}
+      gl={{ alpha: true, antialias: true }}
+      onCreated={({ gl }) => {
+        gl.setClearColor(0x000000, 0);
+      }}
+      style={{ background: 'transparent' }}
+    >
       <AntigravityInner {...props} />
     </Canvas>
   );
