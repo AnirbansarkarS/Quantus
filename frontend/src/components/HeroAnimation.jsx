@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Play, ArrowRight, Sparkles, Zap, Terminal } from 'lucide-react';
 
 const words = [
-  { text: "Quantum Realm", color: "from-[#9929EA] via-[#CC66DA] to-[#FAEB92]" },
-  { text: "Classical Physics", color: "from-[#FAEB92] via-[#ff8844] to-[#ff4444]" },
+  { text: "Quantum ML", color: "from-[#9929EA] via-[#CC66DA] to-[#FAEB92]" },
+  { text: "Quantum Computing", color: "from-[#FAEB92] via-[#ff8844] to-[#ff4444]" },
   { text: "Qiskit SDk", color: "from-[#4488ff] via-[#44ffff] to-[#22eedd]" }
 ];
 
