@@ -320,8 +320,23 @@ function App() {
           <Route path="/spring" element={<SpringOscillator />} />
           <Route path="/playground" element={<QiskitPlayground />} />
           <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/roadmap/:id" element={<RoadmapDetail />} />
         </Routes>
       </div>
+    </div>
+  );
+}
+
+function RoadmapDetail() {
+  const { id } = React.useMemo(() => ({ id: window.location.pathname.split('/').pop() }), [window.location.pathname]);
+  
+  return (
+    <div className="pt-32 pb-16 px-4 max-w-4xl mx-auto text-white text-center">
+      <h1 className="text-4xl font-bold mb-6 capitalize text-[#FAEB92]">{id.replace('-', ' ')}</h1>
+      <p className="text-xl text-gray-300">Detailed roadmap modules coming soon...</p>
+      <Link to="/roadmap" className="mt-8 inline-block px-6 py-2 bg-[#9929EA] hover:bg-[#CC66DA] rounded-full transition-all">
+        Back to Roadmap
+      </Link>
     </div>
   );
 }
