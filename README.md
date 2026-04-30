@@ -1,4 +1,4 @@
-# Quantus: Quantum & Classical Physics Visualizer
+# Quantus: Quantum Physics Visualizer
 
 ![React](https://img.shields.io/badge/React-19.2-blue?logo=react&logoColor=white)
 ![Three.js](https://img.shields.io/badge/Three.js-Black?logo=threedotjs)
