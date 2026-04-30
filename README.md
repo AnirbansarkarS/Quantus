@@ -2,7 +2,7 @@
 
 ![React](https://img.shields.io/badge/React-19.2-blue?logo=react&logoColor=white)
 ![Three.js](https://img.shields.io/badge/Three.js-Black?logo=threedotjs)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?logo=tailwind-css)
+
 
 Quantus is an interactive learning platform that visualizes complex quantum mechanics and classical physics concepts. By blending 3D interactivity and live-action code playgrounds, Quantus makes learning physics engaging, accessible, and intuitive.
 
