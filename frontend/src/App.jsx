@@ -31,10 +31,10 @@ function Navbar() {
           </Link>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <Link to="/" className="hover:text-[#FAEB92] text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</Link>
-              <Link to="/simulations" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Simulations</Link>
-              <Link to="/roadmap" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors">Roadmap</Link>
-              <Link to="/playground" className="hover:text-[#FAEB92] text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1">
+              <Link to="/" className="relative text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-[#CC66DA] hover:drop-shadow-[0_0_12px_rgba(204,102,218,0.8)] before:content-[''] before:absolute before:-bottom-1 before:left-0 before:w-full before:h-[2px] before:rounded-full before:bg-[#CC66DA] before:shadow-[0_0_10px_rgba(204,102,218,0.8)] before:scale-x-0 before:origin-right hover:before:origin-left hover:before:scale-x-100 before:transition-transform before:duration-300 before:ease-in-out">Home</Link>
+              <Link to="/simulations" className="relative text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-[#CC66DA] hover:drop-shadow-[0_0_12px_rgba(204,102,218,0.8)] before:content-[''] before:absolute before:-bottom-1 before:left-0 before:w-full before:h-[2px] before:rounded-full before:bg-[#CC66DA] before:shadow-[0_0_10px_rgba(204,102,218,0.8)] before:scale-x-0 before:origin-right hover:before:origin-left hover:before:scale-x-100 before:transition-transform before:duration-300 before:ease-in-out">Simulations</Link>
+              <Link to="/roadmap" className="relative text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-[#CC66DA] hover:drop-shadow-[0_0_12px_rgba(204,102,218,0.8)] before:content-[''] before:absolute before:-bottom-1 before:left-0 before:w-full before:h-[2px] before:rounded-full before:bg-[#CC66DA] before:shadow-[0_0_10px_rgba(204,102,218,0.8)] before:scale-x-0 before:origin-right hover:before:origin-left hover:before:scale-x-100 before:transition-transform before:duration-300 before:ease-in-out">Roadmap</Link>
+              <Link to="/playground" className="relative text-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:text-[#CC66DA] hover:drop-shadow-[0_0_12px_rgba(204,102,218,0.8)] before:content-[''] before:absolute before:-bottom-1 before:left-0 before:w-full before:h-[2px] before:rounded-full before:bg-[#CC66DA] before:shadow-[0_0_10px_rgba(204,102,218,0.8)] before:scale-x-0 before:origin-right hover:before:origin-left hover:before:scale-x-100 before:transition-transform before:duration-300 before:ease-in-out flex items-center gap-1">
                 <Terminal size={14} /> Playground
               </Link>
             </div>
@@ -54,11 +54,11 @@ function Navbar() {
 
         {mobileMenuOpen && (
           <div className="md:hidden pb-4 border-t border-[#9929EA]/20">
-            <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-white hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Home</Link>
-            <Link to="/simulations" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Simulations</Link>
-            <Link to="/roadmap" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Roadmap</Link>
-            <Link to="/playground" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-[#FAEB92] hover:bg-[#9929EA]/10 transition-colors">Playground</Link>
-            <Link to="/playground" onClick={() => setMobileMenuOpen(false)} className="block w-full mt-4 text-center bg-[#9929EA] hover:bg-[#CC66DA] text-white px-6 py-2 rounded-full font-medium transition-all">
+            <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-white transition-all duration-300 hover:text-[#CC66DA] hover:bg-[#CC66DA]/10 hover:shadow-[inset_0_0_10px_rgba(204,102,218,0.2)]">Home</Link>
+            <Link to="/simulations" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 transition-all duration-300 hover:text-[#CC66DA] hover:bg-[#CC66DA]/10 hover:shadow-[inset_0_0_10px_rgba(204,102,218,0.2)]">Simulations</Link>
+            <Link to="/roadmap" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 transition-all duration-300 hover:text-[#CC66DA] hover:bg-[#CC66DA]/10 hover:shadow-[inset_0_0_10px_rgba(204,102,218,0.2)]">Roadmap</Link>
+            <Link to="/playground" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm font-medium text-gray-300 transition-all duration-300 hover:text-[#CC66DA] hover:bg-[#CC66DA]/10 hover:shadow-[inset_0_0_10px_rgba(204,102,218,0.2)] flex items-center gap-1">Playground</Link>
+            <Link to="/playground" onClick={() => setMobileMenuOpen(false)} className="block w-full mt-4 text-center bg-[#9929EA] hover:bg-[#CC66DA] text-white px-6 py-2 rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(204,102,218,0.6)]">
               Launch Playground
             </Link>
           </div>
